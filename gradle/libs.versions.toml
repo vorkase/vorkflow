@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.2"
+agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
@@ -15,6 +15,7 @@ junit = "4.13.2"
 kotlin = "2.3.20"
 kotlinx-coroutines = "1.10.2"
 material3 = "1.10.0-alpha05"
+desktop-jvm = "1.10.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -36,6 +37,10 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 conveyor-control = { group = "dev.hydraulic.conveyor", name = "conveyor-control", version = "1.1" }
+desktop-linux-x86 = {group="org.jetbrains.compose.desktop", name="desktop-jvm-linux-x64", version.ref = "desktop-jvm"}
+desktop-macos-x86 = {group="org.jetbrains.compose.desktop", name="desktop-jvm-macos-x64", version.ref = "desktop-jvm"}
+desktop-macos-arm64 = {group="org.jetbrains.compose.desktop", name="desktop-jvm-macos-arm64", version.ref = "desktop-jvm"}
+desktop-windows-x86 = {group="org.jetbrains.compose.desktop", name="desktop-jvm-windows-x64", version.ref = "desktop-jvm"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

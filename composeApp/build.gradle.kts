@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -92,12 +91,10 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
-
-    // Use the configurations created by the Conveyor plugin to tell Gradle/Conveyor where to find the artifacts for each platform.
-    linuxAmd64(compose.desktop.linux_x64)
-    macAmd64(compose.desktop.macos_x64)
-    macAarch64(compose.desktop.macos_arm64)
-    windowsAmd64(compose.desktop.windows_x64)
+    implementation(libs.desktop.linux.x86)
+    implementation(libs.desktop.macos.x86)
+    implementation(libs.desktop.macos.arm64)
+    implementation(libs.desktop.windows.x86)
 }
 
 compose.desktop {
