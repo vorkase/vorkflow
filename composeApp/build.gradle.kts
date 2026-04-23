@@ -120,7 +120,7 @@ compose.desktop {
         mainClass = "com.vorkase.vorflow.MainKt"
 
         nativeDistributions {
-            packageName = "VorkFlow"
+            packageName = "vorkflow"
         }
     }
 }
