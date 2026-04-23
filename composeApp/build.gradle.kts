@@ -48,6 +48,21 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.core.viewmodel)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.ktor)
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.compose)
+            implementation(libs.compose.material3.adaptive)
+            implementation(libs.kstore)
+            implementation(libs.kstore.file)
+            implementation(libs.material.icons.core)
+            implementation(libs.colorpicker.compose)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -58,6 +73,9 @@ kotlin {
 
             // Conveyor: auto update control.
             implementation(libs.conveyor.control)
+            implementation(libs.jewel.decorated.window)
+            implementation(libs.jewel.int.ui.standalone)
+            implementation(libs.jewel.int.ui.decorated.window)
         }
     }
 }
@@ -70,7 +88,7 @@ android {
         applicationId = "com.vorkase.vorflow"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
     }
     packaging {
@@ -102,7 +120,7 @@ compose.desktop {
         mainClass = "com.vorkase.vorflow.MainKt"
 
         nativeDistributions {
-            packageName = "vorflow"
+            packageName = "VorkFlow"
         }
     }
 }

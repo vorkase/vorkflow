@@ -1,65 +1,88 @@
 package com.vorkase.vorflow
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowState
-
+import com.vorkase.vorflow.components.Navbar
 import dev.hydraulic.conveyor.control.SoftwareUpdateController
+import io.github.vinceglb.filekit.FileKit
+import java.awt.Dimension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.nio.file.Paths
-import kotlin.io.path.exists
-import kotlin.io.path.inputStream
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.jewel.foundation.theme.JewelTheme
+import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
+import org.jetbrains.jewel.intui.standalone.theme.createDefaultTextStyle
+import org.jetbrains.jewel.intui.standalone.theme.createEditorTextStyle
+import org.jetbrains.jewel.intui.standalone.theme.default
+import org.jetbrains.jewel.intui.standalone.theme.lightThemeDefinition
+import org.jetbrains.jewel.intui.window.decoratedWindow
+import org.jetbrains.jewel.intui.window.styling.lightWithLightHeader
+import org.jetbrains.jewel.ui.ComponentStyling
+import org.jetbrains.jewel.window.DecoratedWindow
+import org.jetbrains.jewel.window.styling.TitleBarStyle
+import vorflow.composeapp.generated.resources.Res
+import vorflow.composeapp.generated.resources.icon
 
 val updateController: SoftwareUpdateController? = SoftwareUpdateController.getInstance()
 val canDoOnlineUpdates get() = updateController?.canTriggerUpdateCheckUI() == SoftwareUpdateController.Availability.AVAILABLE
 
-fun main(args: Array<String>) = application {
-    // app.dir is set when packaged to point at the inputs collected by Conveyor.
-    val appIcon = remember {
-        System.getProperty("app.dir")
-            ?.let { Paths.get(it, "icon-512.png") }
-            ?.takeIf { it.exists() }
-            ?.inputStream()
-            ?.buffered()
-            ?.use { BitmapPainter(loadImageBitmap(it)) }
-    }
+fun main(args: Array<String>) {
+    FileKit.init(appId = "VorkFlow")
+    application {
+        val windowIcon = painterResource(Res.drawable.icon)
+        val currentVersion by remember { mutableStateOf(updateController?.currentVersion?.version ?: "Unknown") }
+        val textStyle = JewelTheme.createDefaultTextStyle()
+        val editorStyle = JewelTheme.createEditorTextStyle()
 
-    val windowState = remember { WindowState(size = DpSize(800.dp, 900.dp)) }
-    val currentVersion by remember { mutableStateOf(updateController?.currentVersion?.version ?: "Unknown") }
-    Window(onCloseRequest = ::exitApplication, icon = appIcon, title = "Software Update Demo $currentVersion", state = windowState) {
-        var remoteVersion by remember { mutableStateOf("Checking...") }
-        var updateAvailable by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
+        val themeDefinition =
+            JewelTheme.lightThemeDefinition(defaultTextStyle = textStyle, editorTextStyle = editorStyle)
+        IntUiTheme(
+            theme = themeDefinition,
+            styling =
+                ComponentStyling
+                    .default()
+                    .decoratedWindow(titleBarStyle = TitleBarStyle.lightWithLightHeader()),
+            swingCompatMode = true,
+        ) {
+            DecoratedWindow(
+                onCloseRequest = ::exitApplication,
+                title = "VorkFlow",
+                icon = windowIcon,
+            ) {
+                window.minimumSize = Dimension(500, 500)
 
-        LaunchedEffect(Unit) {
-            coroutineScope.launch(Dispatchers.IO) {
-                try {
-                    val remoteVersionObj: SoftwareUpdateController.Version? = updateController?.currentVersionFromRepository
-                    remoteVersion = remoteVersionObj?.version ?: "Unknown"
-                    updateAvailable = (remoteVersionObj?.compareTo(updateController.currentVersion) ?: 0) > 0
-                } catch (e: Exception) {
-                    remoteVersion = "Error: ${e.message}"
+                var remoteVersion by remember { mutableStateOf("Checking...") }
+                var updateAvailable by remember { mutableStateOf(false) }
+                val coroutineScope = rememberCoroutineScope()
+
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        try {
+                            val remoteVersionObj: SoftwareUpdateController.Version? =
+                                updateController?.currentVersionFromRepository
+                            remoteVersion = remoteVersionObj?.version ?: "Unknown"
+                            updateAvailable = (remoteVersionObj?.compareTo(updateController.currentVersion) ?: 0) > 0
+                        } catch (e: Exception) {
+                            remoteVersion = "Error: ${e.message}"
+                        }
+                    }
                 }
-                println("Remote app version is $remoteVersion" + if (updateAvailable) " (update available)" else "")
+
+                Column {
+                    Navbar()
+                    App(
+                        currentVersion = currentVersion,
+                        remoteVersion = remoteVersion,
+                        updateAvailable = updateAvailable,
+                    )
+                }
             }
         }
-
-        App(
-            currentVersion = currentVersion,
-            remoteVersion = remoteVersion,
-            updateAvailable = updateAvailable
-        )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import com.vorkase.vorflow.theme.VorFlowTheme
 import org.jetbrains.compose.resources.painterResource
 
 import vorflow.composeapp.generated.resources.Res
@@ -46,7 +47,7 @@ fun App(
     remoteVersion: String = "Unknown",
     updateAvailable: Boolean = false
 ) {
-    MaterialTheme {
+    VorFlowTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
