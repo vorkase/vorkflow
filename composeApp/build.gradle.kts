@@ -9,7 +9,7 @@ plugins {
     id("dev.hydraulic.conveyor") version "2.0"
 }
 
-version = "1.0.1"
+version = "1.0.2"
 
 kotlin {
     androidTarget {
@@ -88,7 +88,7 @@ android {
         applicationId = "com.vorkase.vorflow"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
+        versionCode = 1
         versionName = "1.0"
     }
     packaging {
